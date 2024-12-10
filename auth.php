@@ -17,7 +17,7 @@ $password = $_POST['password'];
 
 // Check if username and password are admin credentials
 if ($username === "admin" && $password === "admin123") {
-    header("Location: admin.php");
+    header("Location: admin/admin.php");
     exit();
 }
 
@@ -28,7 +28,7 @@ $result = $mysqli->query($sql);
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         if ($row['username'] === $username && $row['password'] === $password) {
-            header("Location: client.php");
+            header("Location: client/client.php");
             exit();
         }
     }
