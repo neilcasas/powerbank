@@ -1,39 +1,38 @@
 <?php
-// Establish DB connection
-$user = 'root';
-$password = 'admin'; // change to MySQL password
-$server = 'localhost:3310'; // change to 3306 if necessary
-$database = 'powerbank';
+include 'helper/helper.php';
 
-$mysqli = new mysqli($server, $user, $password, $database);
+// Start the session
+session_start();
 
-if ($mysqli->connect_error) {
-  die('Connect Error(' . $mysqli->connect_errno . ')' . $mysqli->connect_error);     
-}
-
-// Get username and password from auth form
+// Get username and password from the form
 $username = $_POST['username'];
 $password = $_POST['password'];
 
-// Check if username and password are admin credentials
+$mysqli = create_connection();
+
+if ($mysqli->connect_error) {
+    die('Connect Error(' . $mysqli->connect_errno . ')' . $mysqli->connect_error);     
+}
+
+// Admin credentials check
 if ($username === "admin" && $password === "admin123") {
-    header("Location: admin/admin.php");
+    $_SESSION['username'] = $username;
+    header("Location: admin.php");
     exit();
 }
 
-// Query the credentials table for other users
-$sql = "SELECT * FROM credentials";
+// Query the database
+$sql = "SELECT * FROM credentials WHERE username = '$username' AND password = '$password'";
 $result = $mysqli->query($sql);
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        if ($row['username'] === $username && $row['password'] === $password) {
-            header("Location: client/client.php");
-            exit();
-        }
-    }
+if ($result->num_rows === 1) {
+    $sql = "SELECT client_id  FROM client WHERE email = \"$username\"";
+    $result = $mysqli->query($sql);
+    $client_id = $result->fetch_assoc()['client_id'];
+    $_SESSION['client_id'] = $client_id;
+    header("Location: client/client.php");
+    exit();
+} else {
+    echo "Login failed";
 }
-
-// If no match is found
-echo "Login failed";
 ?>
