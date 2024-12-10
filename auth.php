@@ -11,4 +11,7 @@ if ($mysqli->connect_error) {
   die('Connect Error('.$mysqli->maxdb_connect_errno().')'.$mysqli->maxdb_connect_error);     
 }
 
+
+
+
 ?>

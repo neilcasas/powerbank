@@ -98,5 +98,19 @@ INSERT INTO loan VALUES
     ("00005", "00003", "STUDENT", 300000.00, 0.05, "2011/03/05", "2015/03/05", "86572"),
     ("00006", "00004", "CAR", 600000.00, 0.18, "2003/09/30", "2008/09/30", "72451");
 
+CREATE TABLE credentials (
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    PRIMARY KEY (username)
+);
 
+-- Insert client credentials
+INSERT INTO credentials (username, password) VALUES
+    ("jacoblash@email.com", "password1"),
+    ("abrdean@email.com", "password2"),
+    ("lizmcginnis@email.com", "password3"),
+    ("markbebop@email.com", "password4");
 
+-- Insert admin credentials
+INSERT INTO credentials (username, password) VALUES
+    ("admin", "admin123");
