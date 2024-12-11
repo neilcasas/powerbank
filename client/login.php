@@ -43,7 +43,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-// Close the database connection
 $mysqli->close();
 ?>
 
@@ -52,3 +51,5 @@ $mysqli->close();
     <label>Password: </label><input type="password" name="password" required><br>
     <input type="submit" value="Login">
 </form>
+
+<p>Don't have an account? <a href="signup.php">Sign up here</a>.</p>
