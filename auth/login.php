@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['email'] = $email;
                 
                 // Redirect to the dashboard
-                header("Location: dashboard.php");
+                header("Location: /powerbank/client/dashboard.php");
                 exit();
             } else {
                 echo "Incorrect password.";
@@ -45,11 +45,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $mysqli->close();
 ?>
-
-<form method="POST">
-    <label>Email: </label><input type="email" name="email" required><br>
-    <label>Password: </label><input type="password" name="password" required><br>
-    <input type="submit" value="Login">
-</form>
-
-<p>Don't have an account? <a href="signup.php">Sign up here</a>.</p>
