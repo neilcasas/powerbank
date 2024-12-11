@@ -67,3 +67,4 @@ $mysqli->close();
     <label>Password: </label><input type="password" name="password" required><br>
     <input type="submit" value="Sign Up">
 </form>
+
