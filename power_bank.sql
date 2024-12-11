@@ -14,7 +14,8 @@ CREATE TABLE client (
 CREATE TABLE account (
 	acct_id INT(5) NOT NULL AUTO_INCREMENT,
     client_id INT(5) NOT NULL,
-    acct_type CHAR(8) NOT NULL,
+    acct_type ENUM('savings', 'checking') NOT NULL,
+    acct_level ENUM('REGULAR', 'PREMIUM', 'VIP') NOT NULL,
     acct_balance DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (acct_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)
@@ -58,14 +59,30 @@ CREATE TABLE loan (
     FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
 );
 
-CREATE TABLE request {
+CREATE TABLE request (
     request_id INT(5) NOT NULL AUTO_INCREMENT,
     client_id INT(5) NOT NULL,
-    request_type VARCHAR(50) NOT NULL,
+    request_type ENUM('LOAN_CREATE','ACCOUNT_CREATE', 'ACCOUNT_DELETE') NOT NULL,
     request_date DATE NOT NULL,
     PRIMARY KEY (request_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id)
-}
+);
+
+CREATE TABLE account_request (
+    request_id INT(5) NOT NULL,
+    acct_id INT(5) NOT NULL,
+    acct_request_type
+    PRIMARY KEY (request_id, acct_id),
+    FOREIGN KEY (request_id) REFERENCES request(request_id),
+    FOREIGN KEY (acct_id) REFERENCES account(acct_id)
+)
+
+CREATE TABLE loan_request (
+    request_id INT(5) NOT NULL,
+    loan_id INT(5) NOT NULL,
+    PRIMARY KEY (request_id, loan_id),
+    FOREIGN KEY (request_id) REFERENCES request(request_id),
+)
 
 INSERT INTO client VALUES
     (1, "Jacob Lash", "43rd. St.", "09358681544", "jacoblash@email.com", "1988-03-11"),
@@ -82,14 +99,14 @@ INSERT INTO account VALUES
     (6, 4, "CHECKING", 150000.00);
 
 INSERT INTO savings_account VALUES
-    (1, 0.05),
-    (3, 0.025),
-    (5, 0.015);
+    (1, 0.05, "VIP"),
+    (3, 0.025, "REGULAR"),
+    (5, 0.030, "PREMIUM");
 
 INSERT INTO checking_account VALUES
-    (2, 20000.00),
-    (4, 10000.00),
-    (6, 100000.00);
+    (2, 12000.00, "REGULAR"),
+    (4, 15000.00, "PREMIUM"),
+    (6, 20000.00, "VIP");
 
 INSERT INTO employee VALUES
     (1, "Isagi Yoichi", "Junior Loan Officer", "isagi@powerbank.com", "1990-06-15", 215000.00),
@@ -115,7 +132,7 @@ CREATE TABLE credentials (
     password VARCHAR(50) NOT NULL,
     client_id INT(5), -- Nullable if it's a client
     employee_id INT(5), -- Nullable if it's an employee
-    role ENUM('client', 'employee', 'manager', 'executive', 'admin') NOT NULL,
+    role ENUM('CLIENT', 'EMPLOYEE', 'MANAGER', 'EXECUTIVE', 'ADMIN') NOT NULL,
     PRIMARY KEY (username),
     FOREIGN KEY (client_id) REFERENCES client(client_id) ON DELETE CASCADE,
     FOREIGN KEY (employee_id) REFERENCES employee(employee_id) ON DELETE CASCADE
@@ -123,18 +140,18 @@ CREATE TABLE credentials (
 
 -- Employees with credentials
 INSERT INTO credentials (username, password, client_id, employee_id, role) VALUES
-    ("isagi@powerbank.com", "password5", NULL, 1, "employee"),
-    ("nagi@powerbank.com", "password6", NULL, 2, "employee"),
-    ("rin@powerbank.com", "password7", NULL, 3, "employee"),
-    ("ego@powerbank.com", "password8", NULL, 4, "manager"),
-    ("mbappe@powerbank.com", "password9", NULL, 5, "executive"),
-    ("loki@powerbank.com", "password10", NULL, 6, "executive"),
-    ("paurbanc@powerbank.com", "password11", NULL, 7, "executive"),
-    ("elliot@powerbank.com", "password12", NULL, 8, "admin");
+    ("isagi@powerbank.com", "password5", NULL, 1, "EMPLOYEE"),
+    ("nagi@powerbank.com", "password6", NULL, 2, "EMPLOYEE"),
+    ("rin@powerbank.com", "password7", NULL, 3, "EMPLOYEE"),
+    ("ego@powerbank.com", "password8", NULL, 4, "MANAGER"),
+    ("mbappe@powerbank.com", "password9", NULL, 5, "EXECUTIVE"),
+    ("loki@powerbank.com", "password10", NULL, 6, "EXECUTIVE"),
+    ("paurbanc@powerbank.com", "password11", NULL, 7, "EXECUTIVE"),
+    ("elliot@powerbank.com", "password12", NULL, 8, "ADMIN");
 
 -- Existing clients with roles as 'client'
 INSERT INTO credentials (username, password, client_id, employee_id, role) VALUES
-    ("jacoblash@email.com", "password1", 1, NULL, "client"),
-    ("abrdean@email.com", "password2", 2, NULL, "client"), 
-    ("lizmcginnis@email.com", "password3", 3, NULL, "client"), 
-    ("markbebop@email.com", "password4", 4, NULL, "client");
+    ("jacoblash@email.com", "password1", 1, NULL, "CLIENT"),
+    ("abrdean@email.com", "password2", 2, NULL, "CLIENT"), 
+    ("lizmcginnis@email.com", "password3", 3, NULL, "CLIENT"), 
+    ("markbebop@email.com", "password4", 4, NULL, "CLIENT");
