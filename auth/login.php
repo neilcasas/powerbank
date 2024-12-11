@@ -6,7 +6,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($mysqli, $_POST['email']);
     $password = mysqli_real_escape_string($mysqli, $_POST['password']);
 
-    if($email === "admin@admin.com" && $password === "admin123") {
+    if ($email === "admin@admin.com" && $password === "admin123") {
         $_SESSION['email'] = $email;
         header("Location: /powerbank/admin/admin.php");
         exit();
@@ -18,10 +18,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt) {
         // Bind the parameter (email) to the prepared statement
         $stmt->bind_param("s", $email);
-        
+
         // Execute the statement
         $stmt->execute();
-        
+
         // Get the result
         $result = $stmt->get_result();
 
@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['email'] = $email;
                 $_SESSION['role'] = $row['role'];   // Store the user role in the session
 
-                if ($row['role'] === 'client') {
+                if ($row['role'] === 'CLIENT') {
                     // Redirect to the dashboard
                     $_SESSION['id'] = $row['client_id'];
                     header("Location: /powerbank/client/dashboard.php");
@@ -59,4 +59,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $mysqli->close();
-?>

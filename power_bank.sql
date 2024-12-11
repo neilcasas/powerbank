@@ -70,22 +70,23 @@ CREATE TABLE request (
 
 CREATE TABLE account_request (
     request_id INT(5) NOT NULL,
-    acct_id INT(5) NOT NULL,
+    client_id INT(5) NOT NULL,
     acct_type ENUM('SAVINGS', 'CHECKING') NOT NULL,
     acct_level ENUM('REGULAR', 'PREMIUM', 'VIP') NOT NULL,
     acct_request_type ENUM('ACCOUNT_CREATE', 'ACCOUNT_DELETE') NOT NULL,
-    PRIMARY KEY (request_id, acct_id),
+    PRIMARY KEY (request_id, client_id),
     FOREIGN KEY (request_id) REFERENCES request(request_id),
-    FOREIGN KEY (acct_id) REFERENCES account(acct_id)
+    FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
 
 CREATE TABLE loan_request (
     request_id INT(5) NOT NULL,
-    loan_id INT(5) NOT NULL,
+    client_id INT(5) NOT NULL,
     loan_type ENUM('BUSINESS', 'CAR', 'HOUSING') NOT NULL,
     loan_amount DECIMAL(9,2) NOT NULL,
-    PRIMARY KEY (request_id, loan_id),
-    FOREIGN KEY (request_id) REFERENCES request(request_id)
+    PRIMARY KEY (request_id, client_id),
+    FOREIGN KEY (request_id) REFERENCES request(request_id),
+    FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
 
 INSERT INTO client VALUES
