@@ -55,29 +55,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Account Application</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <h1>Account Application</h1>
-    <h2>Step 1: Send Application Form</h2>
-    <p>Fill out the form below to apply for a new account.</p>
-    <h2>Step 2: Select Account Type to Open</h2>
-    <form action="/powerbank/client/apply/account.php" method="post">
-        <input type="hidden" name="request_type" value="account_create">
-        <label for="new_acct_type">Request Type</label>
-        <select name="new_acct_type" id="new_acct_type">
-            <option value="savings">New Savings Account</option>
-            <option value="checking">New Checking Account</option>
-        </select>
+    <div class="container mt-5">
+        <h1>Account Application</h1>
+        <h2>Step 1: Send Application Form</h2>
+        <p>Fill out the form below to apply for a new account.</p>
+        <h2>Step 2: Select Account Type to Open</h2>
+        <form action="/powerbank/client/apply/account.php" method="post">
+            <input type="hidden" name="request_type" value="account_create">
+            <div class="form-group">
+                <label for="new_acct_type">Request Type</label>
+                <select name="new_acct_type" id="new_acct_type" class="form-control">
+                    <option value="savings">New Savings Account</option>
+                    <option value="checking">New Checking Account</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="new_acct_level">Account Type</label>
+                <select name="new_acct_level" id="new_acct_level" class="form-control">
+                    <option value="regular">Regular</option>
+                    <option value="premium">Premium</option>
+                    <option value="vip">VIP</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 
-        <label for="account_type">Account Type</label>
-        <select name="new_acct_level" id="new_acct_level">
-            <option value="regular">Regular</option>
-            <option value="premium">Premium</option>
-            <option value="vip">VIP</option>
-        </select>
-        <button type="submit">Submit</button>
-    </form>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

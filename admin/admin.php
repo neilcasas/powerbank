@@ -9,53 +9,70 @@ include '../includes/db.php';
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
+  <title>Admin Dashboard</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-  <?php
-  if ($_SESSION['role'] === 'EMPLOYEE') {
-    echo "<h1>Employee</h1>";
-    // Get account and loan request tables to be displayed
-    $sql = "SELECT * FROM account_request;";
-    $stmt = $mysqli->prepare($sql);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $account_requests = $result->fetch_all(MYSQLI_ASSOC);
-  ?>
+  <div class="container">
+    <?php
+    if ($_SESSION['role'] === 'EMPLOYEE') {
+      echo "<h1 class='mt-5'>Employee Dashboard</h1>";
+      // Get account and loan request tables to be displayed
+      $sql = "SELECT * FROM account_request;";
+      $stmt = $mysqli->prepare($sql);
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $account_requests = $result->fetch_all(MYSQLI_ASSOC);
+    ?>
 
-    <div class="employee-dashboard">
-      <div class="account-requests">
-        <h1>Account Requests</h1>
+      <div class="employee-dashboard mt-4">
+        <div class="account-requests">
+          <h2>Account Requests</h2>
 
-        <table>
-          <tr>
-            <th>Request ID</th>
-            <th>Client ID</th>
-            <th>Account Request Type</th>
-            <th>Account Type</th>
-            <th>Account Level</th>
-          </tr>
-          <?php foreach ($account_requests as $request) : ?>
-            <form action="employee.php" method="post">
+          <table class="table table-bordered">
+            <thead class="thead-dark">
               <tr>
-                <td><?= $request['request_id'] ?></td>
-                <td><?= $request['client_id'] ?></td>
-                <td><?= $request['acct_request_type'] ?></td>
-                <td><?= $request['acct_type'] ?></td>
-                <td><?= $request['acct_level'] ?></td>
-                <td>
-                  <input type="hidden" name="request_id" value="<?= $request['request_id'] ?>">
-                  <button type="submit" name="approve">Approve</button>
-                  <button type="submit" name="reject">Reject</button>
-                </td>
+                <th>Request ID</th>
+                <th>Client ID</th>
+                <th>Account Request Type</th>
+                <th>Account Type</th>
+                <th>Account Level</th>
+                <th>Actions</th>
               </tr>
-            </form>
-          <?php endforeach; ?>
-        </table>
+            </thead>
+            <tbody>
+              <?php foreach ($account_requests as $request) { ?>
+                <tr>
+                  <td><?php echo htmlspecialchars($request['request_id']); ?></td>
+                  <td><?php echo htmlspecialchars($request['client_id']); ?></td>
+                  <td><?php echo htmlspecialchars($request['acct_request_type']); ?></td>
+                  <td><?php echo htmlspecialchars($request['acct_type']); ?></td>
+                  <td><?php echo htmlspecialchars($request['acct_level']); ?></td>
+                  <td>
+                    <form method="post" class="d-inline">
+                      <input type="hidden" name="request_id" value="<?php echo $request['request_id']; ?>">
+                      <input type="hidden" name="request_type" value="account">
+                      <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                      <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
+                    </form>
+                  </td>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
-  <?php } ?>
+    <?php
+    }
+    ?>
+  </div>
+
+  <!-- Bootstrap JS and dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>

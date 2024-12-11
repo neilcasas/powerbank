@@ -54,21 +54,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loan Application</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
 <body>
-    <h1>Loan Application</h1>
-    <form action="/powerbank/client/apply/loan.php" method="POST">
-        <input type="hidden" name="request_type" value="LOAN_CREATE">
-        <label for="new_loan_amount">Loan Amount</label>
-        <input type="text" name="new_loan_amount" id="new_loan_amount">
-        <label for="new_loan_type">Loan Type</label>
-        <select name="new_loan_type">
-            <option value="business">Business Loan</option>
-            <option value="car">Car Loan</option>
-            <option value="housing">Housing Loan</option>
-        </select>
-        <button type="submit">Submit</button>
+    <div class="container mt-5">
+        <h1>Loan Application</h1>
+        <form action="/powerbank/client/apply/loan.php" method="POST">
+            <input type="hidden" name="request_type" value="LOAN_CREATE">
+            <div class="form-group">
+                <label for="new_loan_amount">Loan Amount</label>
+                <input type="text" name="new_loan_amount" id="new_loan_amount" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="new_loan_type">Loan Type</label>
+                <select name="new_loan_type" id="new_loan_type" class="form-control">
+                    <option value="business">Business Loan</option>
+                    <option value="car">Car Loan</option>
+                    <option value="housing">Housing Loan</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 
 </html>
