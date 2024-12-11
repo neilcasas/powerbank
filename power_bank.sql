@@ -6,7 +6,7 @@ CREATE TABLE client (
     client_name VARCHAR(50) NOT NULL,
     address VARCHAR(50) NOT NULL,
     phone_number CHAR(11) NOT NULL,
-    email VARCHAR(50) NOT NULL,
+    email VARCHAR(50) NOT NULL UNIQUE,
     date_of_birth DATE NOT NULL,
     PRIMARY KEY (client_id)
 );
@@ -25,21 +25,21 @@ CREATE TABLE savings_account (
 	acct_id INT(5) NOT NULL,
     savings_interest_rate DECIMAL(4,3) NOT NULL,
     PRIMARY KEY(acct_id),
-    FOREIGN KEY (acct_id) REFERENCES account(acct_id)
+    FOREIGN KEY (acct_id) REFERENCES account(acct_id) ON DELETE CASCADE
 );
 
 CREATE TABLE checking_account (
 	acct_id INT(5) NOT NULL,
     overdraft_limit DECIMAL(9,2) NOT NULL,
     PRIMARY KEY(acct_id),
-    FOREIGN KEY (acct_id) REFERENCES account(acct_id)
+    FOREIGN KEY (acct_id) REFERENCES account(acct_id) ON DELETE CASCADE
 );
 
 CREATE TABLE employee (
 	employee_id INT(5) NOT NULL AUTO_INCREMENT,
     employee_name VARCHAR(50) NOT NULL,
     employee_position VARCHAR(50) NOT NULL, 
-    employee_email VARCHAR(50) NOT NULL,
+    employee_email VARCHAR(50) NOT NULL UNIQUE,
     date_of_birth DATE NOT NULL,
     salary DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (employee_id)
@@ -76,7 +76,7 @@ CREATE TABLE account_request (
     acct_level ENUM('REGULAR', 'PREMIUM', 'VIP') NOT NULL,
     acct_request_type ENUM('ACCOUNT_CREATE', 'ACCOUNT_DELETE') NOT NULL,
     PRIMARY KEY (request_id, client_id),
-    FOREIGN KEY (request_id) REFERENCES request(request_id),
+    FOREIGN KEY (request_id) REFERENCES request(request_id) ON DELETE CASCADE,
     FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
 
@@ -86,7 +86,7 @@ CREATE TABLE loan_request (
     loan_type ENUM('BUSINESS', 'CAR', 'HOUSING') NOT NULL,
     loan_amount DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (request_id, client_id),
-    FOREIGN KEY (request_id) REFERENCES request(request_id),
+    FOREIGN KEY (request_id) REFERENCES request(request_id) ON DELETE CASCADE,
     FOREIGN KEY (client_id) REFERENCES client(client_id)
 );
 
