@@ -59,73 +59,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <h2>Step 2: Select Account Type to Open</h2>
     <form action="/powerbank/client/apply/account.php" method="post">
         <label for="request_type">Request Type</label>
-        <select name="request_type" id="request_type" onchange="updateAccountTypeOptions()">
+        <select name="request_type" id="request_type">
             <option value="savings_create">New Savings Account</option>
             <option value="checking_create">New Checking Account</option>
         </select>
 
         <label for="account_type">Account Type</label>
-        <select name="account_type" id="account_type">
-            <!-- Options will be populated by JavaScript -->
+        <select name="acct_level" id="acct_level">
+            <option value="regular">Regular</option>
+            <option value="premium">Premium</option>
+            <option value="vip">VIP</option>
         </select>
 
         <button type="submit">Submit</button>
     </form>
-
-    <script>
-        function updateAccountTypeOptions() {
-            const requestType = document.getElementById('request_type').value;
-            const accountTypeSelect = document.getElementById('account_type');
-
-            // Clear existing options
-            accountTypeSelect.innerHTML = '';
-
-            if (requestType === 'savings_create') {
-                const savingsOptions = [{
-                        value: 'regular_savings',
-                        text: 'Regular Savings Account'
-                    },
-                    {
-                        value: 'premium_savings',
-                        text: 'Premium Savings Account'
-                    },
-                    {
-                        value: 'vip_savings',
-                        text: 'VIP Savings Account'
-                    }
-                ];
-                savingsOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option.value;
-                    opt.text = option.text;
-                    accountTypeSelect.add(opt);
-                });
-            } else if (requestType === 'checking_create') {
-                const checkingOptions = [{
-                        value: 'regular_checking',
-                        text: 'Regular Checking Account'
-                    },
-                    {
-                        value: 'premium_checking',
-                        text: 'Premium Checking Account'
-                    },
-                    {
-                        value: 'vip_checking',
-                        text: 'VIP Checking Account'
-                    }
-                ];
-                checkingOptions.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option.value;
-                    opt.text = option.text;
-                    accountTypeSelect.add(opt);
-                });
-            }
-        }
-
-        // Initialize the account type options on page load
-        document.addEventListener('DOMContentLoaded', updateAccountTypeOptions);
-    </script>
 </body>
 
 </html>

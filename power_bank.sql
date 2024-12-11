@@ -14,7 +14,7 @@ CREATE TABLE client (
 CREATE TABLE account (
 	acct_id INT(5) NOT NULL AUTO_INCREMENT,
     client_id INT(5) NOT NULL,
-    acct_type ENUM('savings', 'checking') NOT NULL,
+    acct_type ENUM('SAVINGS', 'CHECKING') NOT NULL,
     acct_level ENUM('REGULAR', 'PREMIUM', 'VIP') NOT NULL,
     acct_balance DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (acct_id),
@@ -48,7 +48,7 @@ CREATE TABLE employee (
 CREATE TABLE loan (
 	loan_id INT(5) NOT NULL AUTO_INCREMENT,
     client_id INT(5) NOT NULL,
-    loan_type VARCHAR(50) NOT NULL,
+    loan_type ENUM('BUSINESS', 'CAR', 'HOUSING') NOT NULL,
     loan_amount DECIMAL(9,2) NOT NULL,
     loan_interest_rate DECIMAL(4,3) NOT NULL,
     loan_start_date DATE NOT NULL,
@@ -71,18 +71,22 @@ CREATE TABLE request (
 CREATE TABLE account_request (
     request_id INT(5) NOT NULL,
     acct_id INT(5) NOT NULL,
-    acct_request_type
+    acct_type ENUM('SAVINGS', 'CHECKING') NOT NULL,
+    acct_level ENUM('REGULAR', 'PREMIUM', 'VIP') NOT NULL,
+    acct_request_type ENUM('ACCOUNT_CREATE', 'ACCOUNT_DELETE') NOT NULL,
     PRIMARY KEY (request_id, acct_id),
     FOREIGN KEY (request_id) REFERENCES request(request_id),
     FOREIGN KEY (acct_id) REFERENCES account(acct_id)
-)
+);
 
 CREATE TABLE loan_request (
     request_id INT(5) NOT NULL,
     loan_id INT(5) NOT NULL,
+    loan_type ENUM('BUSINESS', 'CAR', 'HOUSING') NOT NULL,
+    loan_amount DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (request_id, loan_id),
-    FOREIGN KEY (request_id) REFERENCES request(request_id),
-)
+    FOREIGN KEY (request_id) REFERENCES request(request_id)
+);
 
 INSERT INTO client VALUES
     (1, "Jacob Lash", "43rd. St.", "09358681544", "jacoblash@email.com", "1988-03-11"),
@@ -91,22 +95,22 @@ INSERT INTO client VALUES
     (4, "Mark Bebop", "52nd. St.", "09789651211", "markbebop@email.com", "1996-07-04");
 
 INSERT INTO account VALUES
-    (1, 1, "SAVINGS", 481536.75),
-    (2, 1, "CHECKING", 12000.00),
-    (3, 2, "SAVINGS", 515978.25),
-    (4, 3, "CHECKING", 128000.50),
-    (5, 4, "SAVINGS", 80050.75),
-    (6, 4, "CHECKING", 150000.00);
+    (1, 1, "SAVINGS", "VIP", 481536.75),
+    (2, 1, "CHECKING", "REGULAR", 12000.00),
+    (3, 2, "SAVINGS", "REGULAR", 515978.25),
+    (4, 3, "CHECKING", "PREMIUM", 128000.50),
+    (5, 4, "SAVINGS", "PREMIUM", 80050.75),
+    (6, 4, "CHECKING", "VIP", 150000.00);
 
 INSERT INTO savings_account VALUES
-    (1, 0.05, "VIP"),
-    (3, 0.025, "REGULAR"),
-    (5, 0.030, "PREMIUM");
+    (1, 0.050),
+    (3, 0.025),
+    (5, 0.030);
 
 INSERT INTO checking_account VALUES
-    (2, 12000.00, "REGULAR"),
-    (4, 15000.00, "PREMIUM"),
-    (6, 20000.00, "VIP");
+    (2, 12000.00),
+    (4, 15000.00),
+    (6, 20000.00);
 
 INSERT INTO employee VALUES
     (1, "Isagi Yoichi", "Junior Loan Officer", "isagi@powerbank.com", "1990-06-15", 215000.00),
@@ -119,13 +123,12 @@ INSERT INTO employee VALUES
     (8, "Elliot Alderson", "IT Admin", "elliot@powerbank.com", "1993-09-17", 250000.00);
 
 INSERT INTO loan VALUES
-    (1, 1, "BUSINESS", 1000000.00, 0.05, "2004-12-14", "2011-12-14", 1),
-    (2, 1, "CAR", 800000.00, 0.20, "2005-11-05", "2010-05-11", 2),
-    (3, 2, "BUSINESS", 1500000.00, 0.025, "2008-07-21", "2018-07-21", 3),
-    (4, 2, "HOUSING", 2000000.00, 0.07, "2008-04-20", "2028-04-20", 4),
-    (5, 3, "STUDENT", 300000.00, 0.05, "2011-03-05", "2015-03-05", 5),
-    (6, 4, "CAR", 600000.00, 0.18, "2003-09-30", "2008-09-30", 6);
-
+    (1, 1, "BUSINESS", 1000000.00, 0.100, "2004-12-14", "2009-12-14", 1),
+    (2, 1, "CAR", 800000.00, 0.050, "2005-11-05", "2010-11-05", 2),
+    (3, 2, "BUSINESS", 1500000.00, 0.100, "2008-07-21", "2013-07-21", 3),
+    (4, 2, "HOUSING", 2000000.00, 0.150, "2008-04-20", "2023-04-20", 4),
+    (5, 3, "BUSINESS", 300000.00, 0.100, "2011-03-05", "2016-03-05", 5),
+    (6, 4, "CAR", 600000.00, 0.050, "2003-09-30", "2008-09-30", 6);
 
 CREATE TABLE credentials (
     username VARCHAR(50) NOT NULL,
@@ -137,21 +140,21 @@ CREATE TABLE credentials (
     FOREIGN KEY (client_id) REFERENCES client(client_id) ON DELETE CASCADE,
     FOREIGN KEY (employee_id) REFERENCES employee(employee_id) ON DELETE CASCADE
 );
-
 -- Employees with credentials
 INSERT INTO credentials (username, password, client_id, employee_id, role) VALUES
-    ("isagi@powerbank.com", "password5", NULL, 1, "EMPLOYEE"),
-    ("nagi@powerbank.com", "password6", NULL, 2, "EMPLOYEE"),
-    ("rin@powerbank.com", "password7", NULL, 3, "EMPLOYEE"),
-    ("ego@powerbank.com", "password8", NULL, 4, "MANAGER"),
-    ("mbappe@powerbank.com", "password9", NULL, 5, "EXECUTIVE"),
-    ("loki@powerbank.com", "password10", NULL, 6, "EXECUTIVE"),
-    ("paurbanc@powerbank.com", "password11", NULL, 7, "EXECUTIVE"),
-    ("elliot@powerbank.com", "password12", NULL, 8, "ADMIN");
+    ("isagi@powerbank.com", "isagi", NULL, 1, "EMPLOYEE"),
+    ("nagi@powerbank.com", "nagi", NULL, 2, "EMPLOYEE"),
+    ("rin@powerbank.com", "rin", NULL, 3, "EMPLOYEE"),
+    ("ego@powerbank.com", "ego", NULL, 4, "MANAGER"),
+    ("mbappe@powerbank.com", "mbappe", NULL, 5, "EXECUTIVE"),
+    ("loki@powerbank.com", "loki", NULL, 6, "EXECUTIVE"),
+    ("paurbanc@powerbank.com", "paurbanc", NULL, 7, "EXECUTIVE"),
+    ("elliot@powerbank.com", "elliot", NULL, 8, "ADMIN");
 
 -- Existing clients with roles as 'client'
 INSERT INTO credentials (username, password, client_id, employee_id, role) VALUES
-    ("jacoblash@email.com", "password1", 1, NULL, "CLIENT"),
-    ("abrdean@email.com", "password2", 2, NULL, "CLIENT"), 
-    ("lizmcginnis@email.com", "password3", 3, NULL, "CLIENT"), 
-    ("markbebop@email.com", "password4", 4, NULL, "CLIENT");
+    ("jacoblash@email.com", "jacoblash", 1, NULL, "CLIENT"),
+    ("abrdean@email.com", "abrdean", 2, NULL, "CLIENT"), 
+    ("lizmcginnis@email.com", "lizmcginnis", 3, NULL, "CLIENT"), 
+    ("markbebop@email.com", "markbebop", 4, NULL, "CLIENT");
+
