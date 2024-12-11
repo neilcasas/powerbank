@@ -2,14 +2,15 @@ CREATE DATABASE powerbank;
 USE powerbank;
 
 CREATE TABLE client (
-	client_id INT(5) NOT NULL AUTO_INCREMENT,
-    client_name VARCHAR(50) NOT NULL,
-    address VARCHAR(50) NOT NULL,
-    phone_number CHAR(11) NOT NULL,
-    email VARCHAR(50) NOT NULL,
+    client_id INT(5) NOT NULL AUTO_INCREMENT,
+    client_name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     date_of_birth DATE NOT NULL,
     PRIMARY KEY (client_id)
 );
+
 
 CREATE TABLE account (
 	acct_id INT(5) NOT NULL AUTO_INCREMENT,
