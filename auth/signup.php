@@ -2,13 +2,13 @@
 include '../includes/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get and sanitize form input
-    $client_name = mysqli_real_escape_string($mysqli, $_POST['client_name']);
-    $address = mysqli_real_escape_string($mysqli, $_POST['address']);
-    $phone_number = mysqli_real_escape_string($mysqli, $_POST['phone_number']);
-    $email = mysqli_real_escape_string($mysqli, $_POST['email']);
-    $date_of_birth = mysqli_real_escape_string($mysqli, $_POST['date_of_birth']);
-    $password = mysqli_real_escape_string($mysqli, $_POST['password']);
+    // Get form input
+    $client_name = $_POST['client_name'];
+    $address = $_POST['address'];
+    $phone_number = $_POST['phone_number'];
+    $email = $_POST['email'];
+    $date_of_birth = $_POST['date_of_birth'];
+    $password = $_POST['password'];
 
     // Prepare the SQL statement to insert the client data
     $sql = "INSERT INTO client (client_name, address, phone_number, email, date_of_birth) 
@@ -47,24 +47,126 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "Error: " . $stmt->error;
         }
 
-        // Close the statement
+
         $stmt->close();
     } else {
         echo "Error preparing client query: " . $mysqli->error;
     }
 }
 
-// Close the database connection
 $mysqli->close();
 ?>
 
-<form method="POST">
-    <label>Client Name: </label><input type="text" name="client_name" required><br>
-    <label>Address: </label><input type="text" name="address" required><br>
-    <label>Phone Number: </label><input type="text" name="phone_number" required><br>
-    <label>Email: </label><input type="email" name="email" required><br>
-    <label>Date of Birth: </label><input type="date" name="date_of_birth" required><br>
-    <label>Password: </label><input type="password" name="password" required><br>
-    <input type="submit" value="Sign Up">
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
+    crossorigin="anonymous">
+    <style>
+        @font-face{
+            font-family: 'Poppins';
+            src: url('../assets/Poppins-Regular.woff') format('opentype');
+            font-weight: normal;
+            font-style: normal;
+        }
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 20px;
+            background-color: #f8f9fa;
+        }
 
+        h1 {
+            color: #333;
+        }
+
+        p {
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .login-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .card {
+            width: 90%;
+            max-width: 600px; 
+            min-height: 550px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-radius: 8px; 
+            transition: all 0.3s ease;
+            padding: 30px; 
+            background-color: #fff; 
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%; 
+        }
+
+        .form-control {
+            margin-bottom: 15px; 
+            border-radius: 4px; 
+        }
+
+        .btn-success {
+            width: 100%;
+            padding: 12px;
+            margin-top: 30px;
+        }
+
+        .form-label {
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="card">
+            <h1 class="card-title text-center mb-4"><strong>Create Account</strong></h1>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label">Name: </label>
+                        <input type="text" name="client_name" class="form-control" required>
+                    </div>  
+                    <div class="mb-3">
+                        <label class="form-label">Address: </label>
+                        <input type="text" name="address" class="form-control" required>
+                    </div> 
+                    <div class="mb-3">
+                        <label class="form-label">Phone Number: </label>
+                        <input type="text" name="phone_number" class="form-control" required>
+                    </div> 
+                    <div class="mb-3">
+                        <label class="form-label">Email: </label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div> 
+                    <div class="mb-3">
+                        <label class="form-label">Date of Birth: </label>
+                        <input type="date" name="date_of_birth" class="form-control" required>
+                    </div> 
+                    <div class="mb-3">
+                        <label class="form-label">Password: </label>
+                        <input type="password" name="password" class="form-control" required>
+                    </div> 
+                    <input type="submit" value="Sign Up" class="btn btn-success">
+                </form>
+                <p>Already have an account? <a href="/powerbank/">Login here</a>.</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
