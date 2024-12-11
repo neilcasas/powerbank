@@ -17,7 +17,7 @@ include '../includes/db.php';
 <body>
   <div class="container">
     <?php
-    if ($_SESSION['role'] === 'EMPLOYEE') {
+    if ($_SESSION['role'] === 'EMPLOYEE' || $_SESSION['role'] === 'MANAGER') {
       echo "<h1 class='mt-5'>Employee Dashboard</h1>";
       // Get account and loan request tables to be displayed
       $sql = "SELECT * FROM account_request;";
