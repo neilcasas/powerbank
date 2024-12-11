@@ -2,18 +2,19 @@ CREATE DATABASE powerbank;
 USE powerbank;
 
 CREATE TABLE client (
-	client_id CHAR(5) NOT NULL,
-    client_name VARCHAR(50) NOT NULL,
-    address VARCHAR(50) NOT NULL,
-    phone_number CHAR(11) NOT NULL,
-    email VARCHAR(50) NOT NULL,
+    client_id INT(5) NOT NULL AUTO_INCREMENT,
+    client_name VARCHAR(255) NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    email VARCHAR(255) NOT NULL,
     date_of_birth DATE NOT NULL,
     PRIMARY KEY (client_id)
 );
 
+
 CREATE TABLE account (
-	acct_id CHAR(5) NOT NULL,
-    client_id CHAR(5) NOT NULL,
+	acct_id INT(5) NOT NULL AUTO_INCREMENT,
+    client_id INT(5) NOT NULL,
     acct_type CHAR(8) NOT NULL,
     acct_balance DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (acct_id),
@@ -21,21 +22,21 @@ CREATE TABLE account (
 );
 
 CREATE TABLE savings_account (
-	acct_id CHAR(5) NOT NULL,
+	acct_id INT(5) NOT NULL,
     savings_interest_rate DECIMAL(4,3) NOT NULL,
     PRIMARY KEY(acct_id),
     FOREIGN KEY (acct_id) REFERENCES account(acct_id)
 );
 
 CREATE TABLE checking_account (
-	acct_id CHAR(5) NOT NULL,
+	acct_id INT(5) NOT NULL,
     overdraft_limit DECIMAL(9,2) NOT NULL,
     PRIMARY KEY(acct_id),
     FOREIGN KEY (acct_id) REFERENCES account(acct_id)
 );
 
 CREATE TABLE employee (
-	employee_id CHAR(5) NOT NULL,
+	employee_id INT(5) NOT NULL AUTO_INCREMENT,
     employee_name VARCHAR(50) NOT NULL,
     employee_position VARCHAR(50) NOT NULL, 
     salary DECIMAL(9,2) NOT NULL,
@@ -43,14 +44,14 @@ CREATE TABLE employee (
 );
 
 CREATE TABLE loan (
-	loan_id CHAR(5) UNIQUE NOT NULL,
-    client_id CHAR(5) NOT NULL,
+	loan_id INT(5) NOT NULL AUTO_INCREMENT,
+    client_id INT(5) NOT NULL,
     loan_type VARCHAR(50) NOT NULL,
     loan_amount DECIMAL(9,2) NOT NULL,
     loan_interest_rate DECIMAL(4,3) NOT NULL,
     loan_start_date DATE NOT NULL,
 	loan_end_date DATE NOT NULL,
-    employee_id CHAR(5) NOT NULL,
+    employee_id INT(5) NOT NULL,
     PRIMARY KEY (loan_id),
     FOREIGN KEY (client_id) REFERENCES client(client_id),
     FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
