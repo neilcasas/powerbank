@@ -1,7 +1,7 @@
 <?php
 $user = "root";
-$password = "1234"; // Adjust with your database password
-$server = 'localhost:3306'; // change to 3306 if necessary
+$password = "admin"; // Adjust with your database password
+$server = 'localhost:3310'; // change to 3306 if necessary
 $database = "powerbank";
 
 // Create connection
