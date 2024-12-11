@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Execute the prepared statement for credentials
                 if ($stmt_credentials->execute()) {
                     // Redirect to login page after successful signup
-                    header("Location: login.php");
+                    header("Location: /powerbank/");
                     exit();
                 } else {
                     // Error while inserting credentials

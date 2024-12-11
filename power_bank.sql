@@ -115,6 +115,4 @@ INSERT INTO credentials (username, password, client_id, employee_id, role) VALUE
     ("lizmcginnis@email.com", "password3", 3, NULL, "client"), 
     ("markbebop@email.com", "password4", 4, NULL, "client"); 
 
-INSERT INTO credentials (username, password, client_id, employee_id, role) VALUES
-    ("admin@admin.com", "admin123", NULL, 5, "admin"); 
 
