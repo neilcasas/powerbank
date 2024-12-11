@@ -71,6 +71,7 @@ CREATE TABLE request (
 CREATE TABLE account_request (
     request_id INT(5) NOT NULL,
     client_id INT(5) NOT NULL,
+    acct_id INT(5), -- Nullable if it's a new account
     acct_type ENUM('SAVINGS', 'CHECKING') NOT NULL,
     acct_level ENUM('REGULAR', 'PREMIUM', 'VIP') NOT NULL,
     acct_request_type ENUM('ACCOUNT_CREATE', 'ACCOUNT_DELETE') NOT NULL,
