@@ -38,6 +38,8 @@ CREATE TABLE employee (
 	employee_id INT(5) NOT NULL AUTO_INCREMENT,
     employee_name VARCHAR(50) NOT NULL,
     employee_position VARCHAR(50) NOT NULL, 
+    employee_email VARCHAR(50) NOT NULL,
+    date_of_birth DATE NOT NULL,
     salary DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (employee_id)
 );
@@ -55,6 +57,15 @@ CREATE TABLE loan (
     FOREIGN KEY (client_id) REFERENCES client(client_id),
     FOREIGN KEY (employee_id) REFERENCES employee(employee_id)
 );
+
+CREATE TABLE request {
+    request_id INT(5) NOT NULL AUTO_INCREMENT,
+    client_id INT(5) NOT NULL,
+    request_type VARCHAR(50) NOT NULL,
+    request_date DATE NOT NULL,
+    PRIMARY KEY (request_id),
+    FOREIGN KEY (client_id) REFERENCES client(client_id)
+}
 
 INSERT INTO client VALUES
     (1, "Jacob Lash", "43rd. St.", "09358681544", "jacoblash@email.com", "1988-03-11"),
@@ -81,13 +92,14 @@ INSERT INTO checking_account VALUES
     (6, 100000.00);
 
 INSERT INTO employee VALUES
-    (1, "Isagi Yoichi", "Junior Loan Officer", 215000.00),
-    (2, "Seishiro Nagi", "Senior Loan Officer", 350000.00),
-    (3, "Rin Itoshi", "Senior Loan Officer", 350000.00),
-    (4, "Ego Jinpachi", "Bank Manager", 500000.00),
-    (5, "Kylian Mbappe", "Head of Bank Operations", 1250000.00),
-    (6, "Julian Loki", "Head of Marketing", 1000000.00),
-    (7, "John Paurbanc", "Chief Executive Officer", 4000000.00);
+    (1, "Isagi Yoichi", "Junior Loan Officer", "isagi@powerbank.com", "1990-06-15", 215000.00),
+    (2, "Seishiro Nagi", "Senior Loan Officer", "nagi@powerbank.com", "1991-03-20", 350000.00),
+    (3, "Rin Itoshi", "Senior Loan Officer", "rin@powerbank.com", "1989-12-01", 350000.00),
+    (4, "Ego Jinpachi", "Bank Manager", "ego@powerbank.com", "1975-08-25", 500000.00),
+    (5, "Kylian Mbappe", "Head of Bank Operations", "mbappe@powerbank.com", "1985-05-20", 1250000.00),
+    (6, "Julian Loki", "Head of Marketing", "loki@powerbank.com", "1983-11-10", 1000000.00),
+    (7, "John Paurbanc", "Chief Executive Officer", "paurbanc@powerbank.com", "1970-01-15", 4000000.00),
+    (8, "Elliot Alderson", "IT Admin", "elliot@powerbank.com", "1993-09-17", 250000.00);
 
 INSERT INTO loan VALUES
     (1, 1, "BUSINESS", 1000000.00, 0.05, "2004-12-14", "2011-12-14", 1),
@@ -99,20 +111,30 @@ INSERT INTO loan VALUES
 
 
 CREATE TABLE credentials (
-    username VARCHAR(255) NOT NULL,
-    password VARCHAR(255) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
     client_id INT(5), -- Nullable if it's a client
     employee_id INT(5), -- Nullable if it's an employee
-    role ENUM("client", "admin") NOT NULL, -- To differentiate between client and admin
+    role ENUM('client', 'employee', 'manager', 'executive', 'admin') NOT NULL,
     PRIMARY KEY (username),
     FOREIGN KEY (client_id) REFERENCES client(client_id) ON DELETE CASCADE,
     FOREIGN KEY (employee_id) REFERENCES employee(employee_id) ON DELETE CASCADE
 );
 
+-- Employees with credentials
+INSERT INTO credentials (username, password, client_id, employee_id, role) VALUES
+    ("isagi@powerbank.com", "password5", NULL, 1, "employee"),
+    ("nagi@powerbank.com", "password6", NULL, 2, "employee"),
+    ("rin@powerbank.com", "password7", NULL, 3, "employee"),
+    ("ego@powerbank.com", "password8", NULL, 4, "manager"),
+    ("mbappe@powerbank.com", "password9", NULL, 5, "executive"),
+    ("loki@powerbank.com", "password10", NULL, 6, "executive"),
+    ("paurbanc@powerbank.com", "password11", NULL, 7, "executive"),
+    ("elliot@powerbank.com", "password12", NULL, 8, "admin");
+
+-- Existing clients with roles as 'client'
 INSERT INTO credentials (username, password, client_id, employee_id, role) VALUES
     ("jacoblash@email.com", "password1", 1, NULL, "client"),
     ("abrdean@email.com", "password2", 2, NULL, "client"), 
     ("lizmcginnis@email.com", "password3", 3, NULL, "client"), 
-    ("markbebop@email.com", "password4", 4, NULL, "client"); 
-
-
+    ("markbebop@email.com", "password4", 4, NULL, "client");

@@ -1,3 +1,8 @@
+<?php
+  session_start();
+  include '../includes/db.php';
+
+  ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,5 +12,9 @@
   </head>
   <body>
     <h1>Admin</h1>
+    <?php
+      $role = $_SESSION['role'];
+      echo $role;
+    ?>
   </body>
 </html>

@@ -31,10 +31,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($password === $row['password']) {
                 // Store user email in the session (session_start is already called)
                 $_SESSION['email'] = $email;
-                
-                // Redirect to the dashboard
-                header("Location: /powerbank/client/dashboard.php");
-                exit();
+                $_SESSION['role'] = $row['role'];   // Store the user role in the session
+
+                if ($row['role'] === 'client') {
+                    // Redirect to the dashboard
+                    $_SESSION['id'] = $row['client_id'];
+                    header("Location: /powerbank/client/dashboard.php");
+                    exit();
+                } else {
+                    // Redirect to the admin page
+                    $_SESSION['id'] = $row['admin_id'];
+                    header("Location: /powerbank/admin/admin.php");
+                    exit();
+                }
             } else {
                 echo "Incorrect password.";
             }
