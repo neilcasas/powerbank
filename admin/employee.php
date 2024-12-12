@@ -77,12 +77,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             throw new Exception("Execute failed: " . $stmt_checking->error);
                         }
                     }
+                } else if ($request_type === "ACCOUNT_DELETE") {
+                    // Delete from account table
+                    $sql = "DELETE FROM account WHERE client_id = ? AND acct_type = ? AND acct_level = ?;";
+                    $stmt = $mysqli->prepare($sql);
+                    if (!$stmt) {
+                        throw new Exception("Prepare failed: " . $mysqli->error);
+                    }
+                    $stmt->bind_param("iss", $client_id, $acct_type, $acct_level);
+                    if (!$stmt->execute()) {
+                        throw new Exception("Execute failed: " . $stmt->error);
+                    }
+
+                    // Delete from subtype tables
+                    if ($acct_type === "SAVINGS") {
+                        $sql_savings = "DELETE FROM savings_account WHERE acct_id = ?;";
+                        $stmt_savings = $mysqli->prepare($sql_savings);
+                        if (!$stmt_savings) {
+                            throw new Exception("Prepare failed: " . $mysqli->error);
+                        }
+                        $stmt_savings->bind_param("i", $request['acct_id']);
+                        if (!$stmt_savings->execute()) {
+                            throw new Exception("Execute failed: " . $stmt_savings->error);
+                        }
+                    } else if ($acct_type === "CHECKING") {
+                        $sql_checking = "DELETE FROM checking_account WHERE acct_id = ?;";
+                        $stmt_checking = $mysqli->prepare($sql_checking);
+                        if (!$stmt_checking) {
+                            throw new Exception("Prepare failed: " . $mysqli->error);
+                        }
+                        $stmt_checking->bind_param("i", $request['acct_id']);
+                        if (!$stmt_checking->execute()) {
+                            throw new Exception("Execute failed: " . $stmt_checking->error);
+                        }
+                    }
                 }
             }
         }
 
-        // Delete the request
+        // Delete the request from account_request
         $sql = "DELETE FROM account_request WHERE request_id = ?;";
+        $stmt = $mysqli->prepare($sql);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $mysqli->error);
+        }
+        $stmt->bind_param("i", $request_id);
+        if (!$stmt->execute()) {
+            throw new Exception("Execute failed: " . $stmt->error);
+        }
+
+        // Delete the request from request table
+        $sql = "DELETE FROM request WHERE request_id = ?;";
         $stmt = $mysqli->prepare($sql);
         if (!$stmt) {
             throw new Exception("Prepare failed: " . $mysqli->error);
