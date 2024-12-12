@@ -215,32 +215,43 @@
                     <h5 class="mb-0">Loan Information</h5>
                 </div>
                 <div class="card-body">
-                    <?php if (isset($client[0]['loan_id'])): ?>
-                        <table class="table table-bordered">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Loan ID</th>
-                                    <th>Loan Type</th>
-                                    <th>Loan Amount</th>
-                                    <th>Loan Interest Rate</th>
-                                    <th>Loan Start Date</th>
-                                    <th>Loan End Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><?= $client[0]['loan_id'] ?></td>
-                                    <td><?= $client[0]['loan_type'] ?></td>
-                                    <td><?= $client[0]['loan_amount'] ?></td>
-                                    <td><?= $client[0]['loan_interest_rate'] ?></td>
-                                    <td><?= $client[0]['loan_start_date'] ?></td>
-                                    <td><?= $client[0]['loan_end_date'] ?></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    <?php else: ?>
-                        <p class="text-muted">No loan information found.</p>
-                    <?php endif; ?>
+                <?php if (!empty($client)): ?>
+    <?php 
+    // Filter the loans related to the client
+    $loans = array_filter($client, function($account) {
+        return isset($account['loan_id']) && !empty($account['loan_id']);
+    });
+
+    if (count($loans) > 0): ?>
+        <table class="table table-bordered">
+            <thead class="table-light">
+                <tr>
+                    <th>Loan ID</th>
+                    <th>Loan Type</th>
+                    <th>Loan Amount</th>
+                    <th>Loan Interest Rate</th>
+                    <th>Loan Start Date</th>
+                    <th>Loan End Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($loans as $loan): ?>
+                    <tr>
+                        <td><?= $loan['loan_id'] ?></td>
+                        <td><?= $loan['loan_type'] ?></td>
+                        <td><?= $loan['loan_amount'] ?></td>
+                        <td><?= $loan['loan_interest_rate'] ?></td>
+                        <td><?= $loan['loan_start_date'] ?></td>
+                        <td><?= $loan['loan_end_date'] ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p class="text-muted">No loan information found.</p>
+    <?php endif; ?>
+<?php endif; ?>
+
                 </div>
             </div>
         <?php else: ?>
