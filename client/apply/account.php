@@ -108,27 +108,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <div class="container mt-5">
         <h1>Account Application</h1>
-        <h2>Step 1: Send Application Form</h2>
-        <p>Fill out the form below to apply for a new account.</p>
-        <h2>Step 2: Select Account Type to Open</h2>
+        <h2>Select Account Type to Open</h2>
         <form action="/powerbank/client/apply/account.php" method="post">
             <input type="hidden" name="request_type" value="account_create">
             <div class="form-group">
                 <label for="new_acct_type">Request Type</label>
-                <select name="new_acct_type" id="new_acct_type" class="form-control">
+                <select name="new_acct_type" id="new_acct_type" class="form-control" required>
                     <option value="savings">New Savings Account</option>
                     <option value="checking">New Checking Account</option>
                 </select>
             </div>
             <div class="form-group">
                 <label for="new_acct_level">Account Type</label>
-                <select name="new_acct_level" id="new_acct_level" class="form-control">
+                <select name="new_acct_level" id="new_acct_level" class="form-control" required>
                     <option value="regular">Regular</option>
                     <option value="premium">Premium</option>
                     <option value="vip">VIP</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="buttons" class="d-flex mx-2">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/powerbank/client/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
         </form>
     </div>
 

@@ -157,6 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <div class="buttons" class="d-flex mx-2">
+            <a href="/powerbank/client/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
     </div>
 
     <!-- Bootstrap JS and dependencies -->
