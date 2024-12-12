@@ -175,7 +175,7 @@ include '../includes/db.php';
       $result = $stmt->get_result();
       $employees = $result->fetch_all(MYSQLI_ASSOC);
     ?>
-      <div class="it-admin-dashboard">
+      <div class="employee-dashboard mt-4">
         <h2>Employee Accounts Dashboard</h2>
         <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#createEmployeeModal">Create New Employee</button>
         <table class="table table-bordered">
@@ -202,6 +202,10 @@ include '../includes/db.php';
                 <td>
                   <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#changePasswordModal" data-employee-id="<?php echo $employee['employee_id']; ?>">Change Password</button>
                   <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#changeRoleModal" data-employee-id="<?php echo $employee['employee_id']; ?>">Change Role</button>
+                  <form method="post" action="administrator.php" class="d-inline">
+                    <input type="hidden" name="employee_id" value="<?php echo $employee['employee_id']; ?>">
+                    <button type="submit" name="delete_employee" class="btn btn-danger btn-sm">Delete</button>
+                  </form>
                 </td>
               </tr>
             <?php } ?>

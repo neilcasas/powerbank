@@ -85,5 +85,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mysqli->rollback();
             echo "Error creating employee: " . $e->getMessage();
         }
+    } elseif (isset($_POST['delete_employee'])) {
+        // Handle employee deletion
+        $employee_id = $_POST['employee_id'];
+
+        try {
+            // Check if the employee is assigned to any loan
+            $sql = "SELECT COUNT(*) AS loan_count FROM loan WHERE employee_id = ?";
+            $stmt = $mysqli->prepare($sql);
+            $stmt->bind_param("i", $employee_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $row = $result->fetch_assoc();
+
+            if ($row['loan_count'] > 0) {
+                echo "Error: Cannot delete employee assigned to a loan.";
+            } else {
+                // Delete from credentials table
+                $sql = "DELETE FROM credentials WHERE employee_id = ?";
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("i", $employee_id);
+                $stmt->execute();
+
+                if ($stmt->affected_rows > 0) {
+                    // Delete from employee table
+                    $sql = "DELETE FROM employee WHERE employee_id = ?";
+                    $stmt = $mysqli->prepare($sql);
+                    $stmt->bind_param("i", $employee_id);
+                    $stmt->execute();
+
+                    if ($stmt->affected_rows > 0) {
+                        header("Location: success.php");
+                        exit();
+                    } else {
+                        throw new Exception("Error deleting employee.");
+                    }
+                } else {
+                    throw new Exception("Error deleting employee credentials.");
+                }
+            }
+        } catch (Exception $e) {
+            echo "Error deleting employee: " . $e->getMessage();
+        }
     }
 }

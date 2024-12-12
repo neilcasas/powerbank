@@ -40,18 +40,16 @@ if ($_SERVER['REQUEST_METHOD'] === "POST") {
             $loan_end_date = date("Y-m-d", strtotime($loan_start_date . " + 5 years"));
         }
 
-        if ($request_type === "LOAN_CREATE") {
-            // Insert into loan table
-            $sql = "INSERT INTO loan (client_id, employee_id, loan_type, loan_amount, loan_start_date, loan_end_date, loan_interest_rate) VALUES (?, ?, ?, ?, ?, ?, ?);";
-            $stmt = $mysqli->prepare($sql);
-            if (!$stmt) {
-                die("Prepare failed: " . $mysqli->error);
-            }
-            $stmt->bind_param("iisdsdd", $client_id, $employee_id, $loan_type, $loan_amount, $loan_start_date, $loan_end_date, $loan_interest_rate);
-            $stmt->execute();
-            if ($stmt->error) {
-                die("Execute failed: " . $stmt->error);
-            }
+        // Insert into loan table
+        $sql = "INSERT INTO loan (client_id, employee_id, loan_type, loan_amount, loan_start_date, loan_end_date, loan_interest_rate) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        $stmt = $mysqli->prepare($sql);
+        if (!$stmt) {
+            die("Prepare failed: " . $mysqli->error);
+        }
+        $stmt->bind_param("iisssss", $client_id, $employee_id, $loan_type, $loan_amount, $loan_start_date, $loan_end_date, $loan_interest_rate);
+        $stmt->execute();
+        if ($stmt->error) {
+            die("Execute failed: " . $stmt->error);
         }
     }
 

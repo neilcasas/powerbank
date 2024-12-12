@@ -137,7 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Redirect to the same page
-        header("Location: employee.php");
+        header("Location: admin.php");
         exit();
     } catch (Exception $e) {
         echo "Error: " . $e->getMessage();
@@ -169,7 +169,6 @@ $account_requests = $result->fetch_all(MYSQLI_ASSOC);
 
 <body>
     <div class="container mt-5">
-        <h1>Employee Dashboard</h1>
         <div class="account-requests">
             <h2>Account Requests</h2>
             <table class="table table-bordered">
