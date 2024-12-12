@@ -19,12 +19,14 @@ include '../includes/db.php';
     <?php
     if ($_SESSION['role'] === 'EMPLOYEE' || $_SESSION['role'] === 'MANAGER') {
       echo "<h1 class='mt-5'>Employee Dashboard</h1>";
-      // Get account and loan request tables to be displayed
+
+      // Get account tables to be displayed
       $sql = "SELECT * FROM account_request;";
       $stmt = $mysqli->prepare($sql);
       $stmt->execute();
       $result = $stmt->get_result();
       $account_requests = $result->fetch_all(MYSQLI_ASSOC);
+
     ?>
 
       <div class="employee-dashboard mt-4">
@@ -44,16 +46,26 @@ include '../includes/db.php';
             </thead>
             <tbody>
               <?php foreach ($account_requests as $request) { ?>
+                <?php
+                // Get client id for request
+                $sql = "SELECT client_id FROM request WHERE request_id = ?;";
+                $stmt = $mysqli->prepare($sql);
+                $stmt->bind_param("i", $request['request_id']);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $client_id = $result->fetch_assoc()['client_id'];
+                ?>
                 <tr>
                   <td><?php echo htmlspecialchars($request['request_id']); ?></td>
-                  <td><?php echo htmlspecialchars($request['client_id']); ?></td>
+                  <td><?php echo htmlspecialchars($client_id); ?></td>
                   <td><?php echo htmlspecialchars($request['acct_request_type']); ?></td>
                   <td><?php echo htmlspecialchars($request['acct_type']); ?></td>
                   <td><?php echo htmlspecialchars($request['acct_level']); ?></td>
                   <td>
-                    <form method="post" class="d-inline">
+                    <form method="post" class="d-inline" action="employee.php">
                       <input type="hidden" name="request_id" value="<?php echo $request['request_id']; ?>">
-                      <input type="hidden" name="request_type" value="account">
+                      <input type="hidden" name="client_id" value="<?php echo $client_id; ?>">
+                      <input type="hidden" name="request_type" value="<?php echo $request['acct_request_type']; ?>">
                       <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
                       <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
                     </form>
