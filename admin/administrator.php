@@ -15,7 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
 
             if ($stmt->affected_rows > 0) {
-                echo "Password updated successfully.";
+                header("Location: success.php");
+                exit();
             } else {
                 echo "No changes made or employee not found.";
             }
@@ -34,7 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute();
 
             if ($stmt->affected_rows > 0) {
-                echo "Role updated successfully.";
+                header("Location: success.php");
+                exit();
             } else {
                 echo "No changes made or employee not found.";
             }
@@ -71,7 +73,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if ($stmt->affected_rows > 0) {
                     $mysqli->commit();
-                    echo "Employee created successfully.";
+                    header("Location: success.php");
+                    exit();
                 } else {
                     throw new Exception("Error creating employee credentials.");
                 }
