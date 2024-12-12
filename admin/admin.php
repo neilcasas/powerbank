@@ -17,7 +17,7 @@ include '../includes/db.php';
 <body>
   <div class="container">
     <?php
-    if ($_SESSION['role'] === 'EMPLOYEE' || $_SESSION['role'] === 'MANAGER' || $_SESSION['role'] === 'EXECUTIVE') {
+    if ($_SESSION['role'] === 'EMPLOYEE' || $_SESSION['role'] === 'EXECUTIVE') {
 
       // Get account tables to be displayed
       $sql = "SELECT * FROM account_request;";
@@ -144,7 +144,7 @@ include '../includes/db.php';
                 <td><?php echo htmlspecialchars($request['loan_type']); ?></td>
                 <form method="post" class="d-inline" action="manager.php">
                   <td>
-                    <select name="employee_id" class="form-control">
+                    <select name="employee_id" class="form-control" required>
                       <?php foreach ($employees as $employee) { ?>
                         <option value="<?php echo $employee['employee_id']; ?>"><?php echo $employee['employee_name']; ?></option>
                       <?php } ?>
@@ -166,6 +166,9 @@ include '../includes/db.php';
     <?php
     }
     ?>
+    <form action="/powerbank/auth/logout.php" method="post">
+      <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
   </div>
 
   <!-- Bootstrap JS and dependencies -->
