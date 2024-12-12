@@ -30,10 +30,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_loan_amount = intval($_POST['new_loan_amount']);
 
         // Prepare loan application
-        $sql = "INSERT INTO loan_request (request_id, client_id, loan_type, loan_amount) VALUES (?, ?, ?, ?)";
+        $sql = "INSERT INTO loan_request (request_id, loan_type, loan_amount) VALUES ( ?, ?, ?)";
         $stmt = $mysqli->prepare($sql);
         if ($stmt) {
-            $stmt->bind_param("iisi", $request_id, $client_id, $new_loan_type, $new_loan_amount);
+            $stmt->bind_param("isi", $request_id, $new_loan_type, $new_loan_amount);
             if ($stmt->execute()) {
                 // Redirect to success page
                 header("Location: /powerbank/client/apply/success.php");

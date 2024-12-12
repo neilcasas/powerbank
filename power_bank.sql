@@ -39,7 +39,7 @@ CREATE TABLE employee (
 	employee_id INT(5) NOT NULL AUTO_INCREMENT,
     employee_name VARCHAR(50) NOT NULL,
     employee_position VARCHAR(50) NOT NULL, 
-    employee_email VARCHAR(50) NOT NULL UNIQUE,
+    employee_email VARCHAR(50) NOT NULL,
     date_of_birth DATE NOT NULL,
     salary DECIMAL(9,2) NOT NULL,
     PRIMARY KEY (employee_id)
