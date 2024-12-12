@@ -56,7 +56,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $mysqli->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -67,15 +66,16 @@ $mysqli->close();
     rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" 
     crossorigin="anonymous">
     <style>
-        @font-face{
+        @font-face {
             font-family: 'Poppins';
             src: url('../assets/Poppins-Regular.woff') format('opentype');
             font-weight: normal;
             font-style: normal;
         }
+
         body {
             font-family: 'Poppins', Arial, sans-serif;
-            margin: 20px;
+            margin: 30px;
             background-color: #f8f9fa;
         }
 
@@ -97,13 +97,14 @@ $mysqli->close();
         }
 
         .card {
-            width: 90%;
-            max-width: 600px; 
-            min-height: 550px; 
+            width: 100%;
+            max-width: 500px;  /* Reduced max-width */
+            min-height: 500px;  /* Reduced min-height */
+            max-height: 750px;  /* Reduced max-height */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             border-radius: 8px; 
             transition: all 0.3s ease;
-            padding: 30px; 
+            padding: 20px;  /* Reduced padding */
             background-color: #fff; 
         }
 
@@ -121,8 +122,8 @@ $mysqli->close();
 
         .btn-success {
             width: 100%;
-            padding: 12px;
-            margin-top: 30px;
+            padding: 10px;  /* Reduced padding */
+            margin-top: 20px;  /* Reduced top margin */
         }
 
         .form-label {
