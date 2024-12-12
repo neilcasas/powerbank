@@ -3,7 +3,7 @@ session_start();
 include '../includes/db.php';
 
 if (!isset($_SESSION['email'])) {
-    header("Location: login.php");
+    header("Location: /powerbank/auth/login.php");
     exit();
 }
 
@@ -12,7 +12,7 @@ $email = $_SESSION['email'];
 // Prepare the SQL query to fetch client details and related account information
 $sql = "
     SELECT c.client_name, c.email, c.address, c.phone_number, c.date_of_birth, 
-           a.acct_id, a.acct_type, a.acct_balance, 
+           a.acct_id, a.acct_type, a.acct_level, a.acct_balance, 
            sa.savings_interest_rate, 
            ca.overdraft_limit, 
            l.loan_id, l.loan_type, l.loan_amount, l.loan_interest_rate, l.loan_start_date, l.loan_end_date
@@ -22,6 +22,7 @@ $sql = "
     LEFT JOIN checking_account ca ON a.acct_id = ca.acct_id
     LEFT JOIN loan l ON c.client_id = l.client_id
     WHERE c.email = ?";
+
 $stmt = $mysqli->prepare($sql);
 
 if ($stmt) {
@@ -34,8 +35,9 @@ if ($stmt) {
     // Get the result
     $result = $stmt->get_result();
 
-    if ($result->num_rows > 0) {
-        $client = $result->fetch_assoc();
+    $client = [];
+    while ($row = $result->fetch_assoc()) {
+        $client[] = $row;
     }
 
     // Close the prepared statement
@@ -88,10 +90,41 @@ $mysqli->close();
 </head>
 
 <body class="bg-light.bg-gradient">
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/powerbank/client/dashboard.php">Home</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Balance
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Deposit</a></li>
+                <li><a class="dropdown-item" href="#">Withdraw</a></li>
+            </ul>
+            </li>
+            <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Request
+            </a>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/powerbank/client/apply/loan.php">Loan Request</a></li>
+                <li><a class="dropdown-item" href="/powerbank/client/apply/account.php">Account Create</a></li>
+                <li><a class="dropdown-item" href="/powerbank/client/apply/closure.php">Account Delete</a></li>
+            </ul>
+            </li>
+        </ul>
+        </div>
+    </div>
+    </nav>
 
     <div class="container">
-        <?php if (isset($client)): ?>
-            <h1 class="text-center mb-4">Welcome, <?= $client['client_name'] ?></h1>
+        <?php if (!empty($client)): ?>
+            <h1 class="text-center mb-4">Welcome, <?= $client[0]['client_name'] ?></h1>
 
             <div class="card">
                 <div class="card-header bg-primary text-white">
@@ -110,11 +143,11 @@ $mysqli->close();
                         </thead>
                         <tbody>
                             <tr>
-                                <td><?= $client['client_name'] ?></td>
-                                <td><?= $client['email'] ?></td>
-                                <td><?= $client['address'] ?></td>
-                                <td><?= $client['phone_number'] ?></td>
-                                <td><?= $client['date_of_birth'] ?></td>
+                                <td><?= $client[0]['client_name'] ?></td>
+                                <td><?= $client[0]['email'] ?></td>
+                                <td><?= $client[0]['address'] ?></td>
+                                <td><?= $client[0]['phone_number'] ?></td>
+                                <td><?= $client[0]['date_of_birth'] ?></td>
                             </tr>
                         </tbody>
                     </table>
@@ -131,19 +164,23 @@ $mysqli->close();
                             <tr>
                                 <th>Account ID</th>
                                 <th>Account Type</th>
+                                <th>Account Level</th>
                                 <th>Balance</th>
                                 <th>Savings Interest Rate</th>
                                 <th>Overdraft Limit</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td><?= $client['acct_id'] ?></td>
-                                <td><?= $client['acct_type'] ?></td>
-                                <td><?= $client['acct_balance'] ?></td>
-                                <td><?= isset($client['savings_interest_rate']) ? $client['savings_interest_rate'] : 'N/A' ?></td>
-                                <td><?= isset($client['overdraft_limit']) ? $client['overdraft_limit'] : 'N/A' ?></td>
-                            </tr>
+                            <?php foreach ($client as $account): ?>
+                                <tr>
+                                    <td><?= $account['acct_id'] ?></td>
+                                    <td><?= $account['acct_type'] ?></td>
+                                    <td><?= $account['acct_level'] ?></td>
+                                    <td><?= $account['acct_balance'] ?></td>
+                                    <td><?= isset($account['savings_interest_rate']) ? $account['savings_interest_rate'] : 'N/A' ?></td>
+                                    <td><?= isset($account['overdraft_limit']) ? $account['overdraft_limit'] : 'N/A' ?></td>
+                                </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -154,7 +191,7 @@ $mysqli->close();
                     <h5 class="mb-0">Loan Information</h5>
                 </div>
                 <div class="card-body">
-                    <?php if ($client['loan_id']): ?>
+                    <?php if (isset($client[0]['loan_id'])): ?>
                         <table class="table table-bordered">
                             <thead class="table-light">
                                 <tr>
@@ -168,12 +205,12 @@ $mysqli->close();
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><?= $client['loan_id'] ?></td>
-                                    <td><?= $client['loan_type'] ?></td>
-                                    <td><?= $client['loan_amount'] ?></td>
-                                    <td><?= $client['loan_interest_rate'] ?></td>
-                                    <td><?= $client['loan_start_date'] ?></td>
-                                    <td><?= $client['loan_end_date'] ?></td>
+                                    <td><?= $client[0]['loan_id'] ?></td>
+                                    <td><?= $client[0]['loan_type'] ?></td>
+                                    <td><?= $client[0]['loan_amount'] ?></td>
+                                    <td><?= $client[0]['loan_interest_rate'] ?></td>
+                                    <td><?= $client[0]['loan_start_date'] ?></td>
+                                    <td><?= $client[0]['loan_end_date'] ?></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -186,13 +223,14 @@ $mysqli->close();
             <p class="alert alert-danger">No client found with this email.</p>
         <?php endif; ?>
 
-        <form method="POST" class="text-center mt-4">
+        <form method="POST" form action="/powerbank/" class="text-center mt-4">
             <button type="submit" name="logout" class="btn btn-danger">Logout</button>
         </form>
     </div>
 
     <?php
     if (isset($_POST['logout'])) {
+        unset($_SESSION['email']);
         session_destroy();
         header("Location: /powerbank/");
         exit();
