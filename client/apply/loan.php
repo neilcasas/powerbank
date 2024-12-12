@@ -2,12 +2,14 @@
 session_start();
 include '../../includes/db.php';
 
-
 // maybe replace to 403 forbidden
 if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'CLIENT') {
     header("Location: /powerbank/auth/login.php");
     exit();
 }
+
+// Initialize error message
+$error_message = "";
 
 // If a post request was made to this page
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,30 +21,44 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Insert into parent request table
     $sql = "INSERT INTO request (client_id, request_type, request_date) VALUES (?, ?, ?)";
     $stmt = $mysqli->prepare($sql);
-    $stmt->bind_param("iss", $client_id, $request_type, $request_date);
-    $stmt->execute();
+    if ($stmt) {
+        $stmt->bind_param("iss", $client_id, $request_type, $request_date);
+        if ($stmt->execute()) {
+            // Retrieve the generated request_id
+            $request_id = $mysqli->insert_id; // Get the last inserted ID
 
-    // Retrieve the generated request_id
-    $request_id = $mysqli->insert_id; // Get the last inserted ID
+            if ($request_type === "LOAN_CREATE") {
+                $new_loan_type = strtoupper($_POST['new_loan_type']);
+                $new_loan_amount = $_POST['new_loan_amount'];
 
-    if ($request_type === "LOAN_CREATE") {
-        $new_loan_type = strtoupper($_POST['new_loan_type']);
-        $new_loan_amount = intval($_POST['new_loan_amount']);
+                // Check if loan amount is an integer
+                if (!filter_var($new_loan_amount, FILTER_VALIDATE_INT)) {
+                    $error_message = "Loan amount must be an integer.";
+                } else {
+                    $new_loan_amount = intval($new_loan_amount);
 
-        // Prepare loan application
-        $sql = "INSERT INTO loan_request (request_id, loan_type, loan_amount) VALUES ( ?, ?, ?)";
-        $stmt = $mysqli->prepare($sql);
-        if ($stmt) {
-            $stmt->bind_param("isi", $request_id, $new_loan_type, $new_loan_amount);
-            if ($stmt->execute()) {
-                // Redirect to success page
-                header("Location: /powerbank/client/apply/success.php");
-                exit();
-            } else {
-                echo "Error: " . $stmt->error;
+                    // Prepare loan application
+                    $sql = "INSERT INTO loan_request (request_id, loan_type, loan_amount) VALUES (?, ?, ?)";
+                    $stmt = $mysqli->prepare($sql);
+                    if ($stmt) {
+                        $stmt->bind_param("isi", $request_id, $new_loan_type, $new_loan_amount);
+                        if ($stmt->execute()) {
+                            // Redirect to success page
+                            header("Location: /powerbank/client/apply/success.php");
+                            exit();
+                        } else {
+                            $error_message = "Error executing loan request: " . $stmt->error;
+                        }
+                    } else {
+                        $error_message = "Error preparing loan request: " . $mysqli->error;
+                    }
+                }
             }
-            $stmt->close();
+        } else {
+            $error_message = "Error executing request: " . $stmt->error;
         }
+    } else {
+        $error_message = "Error preparing request: " . $mysqli->error;
     }
 }
 ?>
@@ -59,21 +75,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <style>
         /* Override the default navbar link color to remove the blue color */
         .navbar-nav .nav-link {
-            color: black !important; /* Change to desired color */
+            color: black !important;
+            /* Change to desired color */
         }
 
         .navbar-nav .nav-link:hover {
-            color: #0056b3 !important; /* Change to desired hover color */
+            color: #0056b3 !important;
+            /* Change to desired hover color */
         }
 
         .navbar-nav .nav-item.active .nav-link {
-            color: #0056b3 !important; /* Change active link color */
+            color: #0056b3 !important;
+            /* Change active link color */
         }
     </style>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="/powerbank/client/dashboard.php">Home</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -106,6 +125,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </nav>
     <div class="container mt-5">
         <h1>Loan Application</h1>
+        <?php if (!empty($error_message)) { ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo htmlspecialchars($error_message); ?>
+            </div>
+        <?php } ?>
         <form action="/powerbank/client/apply/loan.php" method="POST">
             <input type="hidden" name="request_type" value="LOAN_CREATE">
             <div class="form-group">
