@@ -134,7 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="row mb-3">
             <label for="amount" class="form-label">Withdrawal Amount:</label>
             <div class="col-md-6">
-                <input type="number" name="amount" id="amount" class="form-control" min="0.01" step="0.01" required>
+                <input type="number" name="amount" id="amount" class="form-control" min="500" step="0.01" required>
             </div>
         </div>
 
