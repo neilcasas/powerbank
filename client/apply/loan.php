@@ -65,17 +65,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="hidden" name="request_type" value="LOAN_CREATE">
             <div class="form-group">
                 <label for="new_loan_amount">Loan Amount</label>
-                <input type="text" name="new_loan_amount" id="new_loan_amount" class="form-control">
+                <input type="number" name="new_loan_amount" id="new_loan_amount" class="form-control" min="100000" max="1000000" required>
             </div>
             <div class="form-group">
                 <label for="new_loan_type">Loan Type</label>
-                <select name="new_loan_type" id="new_loan_type" class="form-control">
+                <select name="new_loan_type" id="new_loan_type" class="form-control" required>
                     <option value="business">Business Loan</option>
                     <option value="car">Car Loan</option>
                     <option value="housing">Housing Loan</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="buttons" class="d-flex mx-2">
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a href="/powerbank/client/dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
         </form>
     </div>
 
