@@ -31,10 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $new_acct_level = strtoupper($_POST['new_acct_level']);
 
         // Prepare the SQL statement to insert the account application
-        $sql = "INSERT INTO account_request (request_id, client_id, acct_type, acct_level, acct_request_type) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO account_request (request_id, acct_type, acct_level, acct_request_type) VALUES (?, ?, ?, ?)";
         $stmt = $mysqli->prepare($sql);
         if ($stmt) {
-            $stmt->bind_param("iisss", $request_id, $client_id, $new_acct_type, $new_acct_level, $request_type);
+            $stmt->bind_param("isss", $request_id, $new_acct_type, $new_acct_level, $request_type);
             if ($stmt->execute()) {
                 // Redirect to success page
                 header("Location: /powerbank/client/apply/success.php");
