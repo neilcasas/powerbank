@@ -1,53 +1,53 @@
-<?php
-session_start();
-include '../includes/db.php';
+    <?php
+    session_start();
+    include '../includes/db.php';
 
-if (!isset($_SESSION['email'])) {
-    header("Location: /powerbank/auth/login.php");
-    exit();
-}
-
-$email = $_SESSION['email'];
-
-// Prepare the SQL query to fetch client details and related account information
-$sql = "
-    SELECT c.client_name, c.email, c.address, c.phone_number, c.date_of_birth, 
-           a.acct_id, a.acct_type, a.acct_level, a.acct_balance, 
-           sa.savings_interest_rate, 
-           ca.overdraft_limit, 
-           l.loan_id, l.loan_type, l.loan_amount, l.loan_interest_rate, l.loan_start_date, l.loan_end_date
-    FROM client c
-    LEFT JOIN account a ON c.client_id = a.client_id
-    LEFT JOIN savings_account sa ON a.acct_id = sa.acct_id
-    LEFT JOIN checking_account ca ON a.acct_id = ca.acct_id
-    LEFT JOIN loan l ON c.client_id = l.client_id
-    WHERE c.email = ?";
-
-$stmt = $mysqli->prepare($sql);
-
-if ($stmt) {
-    // Bind the email parameter to the prepared statement
-    $stmt->bind_param("s", $email);
-
-    // Execute the query
-    $stmt->execute();
-
-    // Get the result
-    $result = $stmt->get_result();
-
-    $client = [];
-    while ($row = $result->fetch_assoc()) {
-        $client[] = $row;
+    if (!isset($_SESSION['email'])) {
+        header("Location: /powerbank/auth/login.php");
+        exit();
     }
 
-    // Close the prepared statement
-    $stmt->close();
-} else {
-    echo "Error preparing the query: " . $mysqli->error;
-}
+    $email = $_SESSION['email'];
 
-$mysqli->close();
-?>
+    // Prepare the SQL query to fetch client details and related account information
+    $sql = "
+        SELECT c.client_name, c.email, c.address, c.phone_number, c.date_of_birth, 
+            a.acct_id, a.acct_type, a.acct_level, a.acct_balance, 
+            sa.savings_interest_rate, 
+            ca.overdraft_limit, 
+            l.loan_id, l.loan_type, l.loan_amount, l.loan_interest_rate, l.loan_start_date, l.loan_end_date
+        FROM client c
+        LEFT JOIN account a ON c.client_id = a.client_id
+        LEFT JOIN savings_account sa ON a.acct_id = sa.acct_id
+        LEFT JOIN checking_account ca ON a.acct_id = ca.acct_id
+        LEFT JOIN loan l ON c.client_id = l.client_id
+        WHERE c.email = ?";
+
+    $stmt = $mysqli->prepare($sql);
+
+    if ($stmt) {
+        // Bind the email parameter to the prepared statement
+        $stmt->bind_param("s", $email);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Get the result
+        $result = $stmt->get_result();
+
+        $client = [];
+        while ($row = $result->fetch_assoc()) {
+            $client[] = $row;
+        }
+
+        // Close the prepared statement
+        $stmt->close();
+    } else {
+        echo "Error preparing the query: " . $mysqli->error;
+    }
+
+    $mysqli->close();
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -103,8 +103,8 @@ $mysqli->close();
                 Balance
             </a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Deposit</a></li>
-                <li><a class="dropdown-item" href="#">Withdraw</a></li>
+                <li><a class="dropdown-item" href="/powerbank/client/balance/deposit.php">Deposit</a></li>
+                <li><a class="dropdown-item" href="/powerbank/client/balance/withdraw.php">Withdraw</a></li>
             </ul>
             </li>
             <li class="nav-item dropdown">
@@ -121,7 +121,6 @@ $mysqli->close();
         </div>
     </div>
     </nav>
-
     <div class="container">
         <?php if (!empty($client)): ?>
             <h1 class="text-center mb-4">Welcome, <?= $client[0]['client_name'] ?></h1>
@@ -155,36 +154,61 @@ $mysqli->close();
             </div>
 
             <div class="card">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">Account Information</h5>
-                </div>
-                <div class="card-body">
-                    <table class="table table-bordered">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Account ID</th>
-                                <th>Account Type</th>
-                                <th>Account Level</th>
-                                <th>Balance</th>
-                                <th>Savings Interest Rate</th>
-                                <th>Overdraft Limit</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($client as $account): ?>
-                                <tr>
-                                    <td><?= $account['acct_id'] ?></td>
-                                    <td><?= $account['acct_type'] ?></td>
-                                    <td><?= $account['acct_level'] ?></td>
-                                    <td><?= $account['acct_balance'] ?></td>
-                                    <td><?= isset($account['savings_interest_rate']) ? $account['savings_interest_rate'] : 'N/A' ?></td>
-                                    <td><?= isset($account['overdraft_limit']) ? $account['overdraft_limit'] : 'N/A' ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+    <div class="card-header bg-success text-white">
+        <h5 class="mb-0">Account Information</h5>
+    </div>
+    <div class="card-body">
+        <?php
+        // Check if there is any account information
+        $accountFound = false;
+        foreach ($client as $account): 
+            if (!empty($account['acct_id'])) {
+                $accountFound = true;
+                break;  // Exit loop early if we find any account information
+            }
+        endforeach;
+
+        if ($accountFound): ?>
+            <table class="table table-bordered">
+                <thead class="table-light">
+                    <tr>
+                        <th>Account ID</th>
+                        <th>Account Type</th>
+                        <th>Account Level</th>
+                        <th>Balance</th>
+                        <th>Savings Interest Rate</th>
+                        <th>Overdraft Limit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    // Iterate through client array and only display accounts with acct_id
+                    $displayedAccounts = [];  // Track displayed accounts to avoid duplicates
+                    foreach ($client as $account): 
+                        if (!empty($account['acct_id']) && !in_array($account['acct_id'], $displayedAccounts)): 
+                            $displayedAccounts[] = $account['acct_id'];  // Mark account as displayed
+                    ?>
+                        <tr>
+                            <td><?= $account['acct_id'] ?></td>
+                            <td><?= $account['acct_type'] ?></td>
+                            <td><?= $account['acct_level'] ?></td>
+                            <td><?= $account['acct_balance'] ?></td>
+                            <td><?= isset($account['savings_interest_rate']) ? $account['savings_interest_rate'] : 'N/A' ?></td>
+                            <td><?= isset($account['overdraft_limit']) ? $account['overdraft_limit'] : 'N/A' ?></td>
+                        </tr>
+                    <?php 
+                        endif;
+                    endforeach; 
+                    ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p class="text-muted">No account information found.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+
 
             <div class="card">
                 <div class="card-header bg-warning text-white">
@@ -239,7 +263,5 @@ $mysqli->close();
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
-</html>
 
 </html>

@@ -57,9 +57,55 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Account Application</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Override the default navbar link color to remove the blue color */
+        .navbar-nav .nav-link {
+            color: black !important; /* Change to desired color */
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: #0056b3 !important; /* Change to desired hover color */
+        }
+
+        .navbar-nav .nav-item.active .nav-link {
+            color: #0056b3 !important; /* Change active link color */
+        }
+    </style>
 </head>
 
 <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/powerbank/client/dashboard.php">Home</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Balance
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="/powerbank/client/balance/deposit.php">Deposit</a>
+                            <a class="dropdown-item" href="/powerbank/client/balance/withdraw.php">Withdraw</a>
+                        </div>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownRequest" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Request
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownRequest">
+                            <a class="dropdown-item" href="/powerbank/client/apply/loan.php">Loan Request</a>
+                            <a class="dropdown-item" href="/powerbank/client/apply/account.php">Account Create</a>
+                            <a class="dropdown-item" href="/powerbank/client/apply/closure.php">Account Delete</a>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="container mt-5">
         <h1>Account Application</h1>
         <h2>Step 1: Send Application Form</h2>
