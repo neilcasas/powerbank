@@ -66,6 +66,7 @@ include '../includes/db.php';
                       <input type="hidden" name="request_id" value="<?php echo $request['request_id']; ?>">
                       <input type="hidden" name="client_id" value="<?php echo $client_id; ?>">
                       <input type="hidden" name="request_type" value="<?php echo $request['acct_request_type']; ?>">
+                      <input type="hidden" name="acct_id" value="<?php echo $request['acct_id']; ?>">
                       <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
                       <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm">Reject</button>
                     </form>

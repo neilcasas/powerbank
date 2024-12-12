@@ -79,16 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 } else if ($request_type === "ACCOUNT_DELETE") {
                     // Delete from account table
-                    $sql = "DELETE FROM account WHERE client_id = ? AND acct_type = ? AND acct_level = ?;";
+                    $sql = "DELETE FROM account WHERE acct_id = ?;";
                     $stmt = $mysqli->prepare($sql);
                     if (!$stmt) {
                         throw new Exception("Prepare failed: " . $mysqli->error);
                     }
-                    $stmt->bind_param("iss", $client_id, $acct_type, $acct_level);
+                    $stmt->bind_param("i", $request['acct_id']);
                     if (!$stmt->execute()) {
                         throw new Exception("Execute failed: " . $stmt->error);
                     }
-
                     // Delete from subtype tables
                     if ($acct_type === "SAVINGS") {
                         $sql_savings = "DELETE FROM savings_account WHERE acct_id = ?;";
